@@ -2,10 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoRepuestos.Models;
 namespace ProyectoRepuestos.Services;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-
     public DbSet<Repuesto> Repuestos { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

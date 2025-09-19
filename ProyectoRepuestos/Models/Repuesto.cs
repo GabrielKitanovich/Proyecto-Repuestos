@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using ProyectoRepuestos.Bases;
 
 namespace ProyectoRepuestos.Models;
@@ -9,6 +10,7 @@ public class Repuesto : BaseModel
     [Required]
     public required string Description { get; set; }
     [Required]
+    [Precision(16, 2)]
     [Range(0.01, double.MaxValue, ErrorMessage = "Price must be positive.")]
     public required decimal Price { get; set; }
     [Required]
