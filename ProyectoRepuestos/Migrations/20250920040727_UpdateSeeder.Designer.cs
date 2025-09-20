@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoRepuestos.Services;
 
@@ -11,9 +12,11 @@ using ProyectoRepuestos.Services;
 namespace ProyectoRepuestos.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250920040727_UpdateSeeder")]
+    partial class UpdateSeeder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +62,7 @@ namespace ProyectoRepuestos.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 9, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2025, 9, 20, 4, 7, 25, 894, DateTimeKind.Utc).AddTicks(6561),
                             Description = "Descripción del Repuesto1",
                             IsActive = true,
                             Name = "Repuesto1",
@@ -69,7 +72,7 @@ namespace ProyectoRepuestos.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 9, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2025, 9, 20, 4, 7, 25, 894, DateTimeKind.Utc).AddTicks(7013),
                             Description = "Descripción del Repuesto2",
                             IsActive = true,
                             Name = "Repuesto2",
@@ -79,7 +82,7 @@ namespace ProyectoRepuestos.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 9, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2025, 9, 20, 4, 7, 25, 894, DateTimeKind.Utc).AddTicks(7015),
                             Description = "Descripción del Repuesto3",
                             IsActive = true,
                             Name = "Repuesto3",
