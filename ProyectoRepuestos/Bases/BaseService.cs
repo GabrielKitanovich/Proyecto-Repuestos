@@ -1,15 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-
 namespace ProyectoRepuestos.Bases;
 
 public class BaseService : IBaseService
 {
-
-    
     public Task<T> CreateAsync<T>(T entity) where T : BaseModel
     {
         throw new NotImplementedException();

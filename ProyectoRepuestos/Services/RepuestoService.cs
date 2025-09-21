@@ -1,70 +1,61 @@
-using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using ProyectoRepuestos.Bases;
 using ProyectoRepuestos.Helpers;
 using ProyectoRepuestos.Models;
+using ProyectoRepuestos.Repositories.Interfaces;
 
 namespace ProyectoRepuestos.Services;
 
 public class RepuestoService : BaseService, IRepuestoService
 {
 
-    private readonly ApplicationDbContext _context;
-    private readonly DbSet<Repuesto> _repuestos;
+    private readonly IRepuestoRepository _repuestoRepository;
 
-    public RepuestoService(ApplicationDbContext context)
+    public RepuestoService(IRepuestoRepository repuestoRepository)
     {
-        _context = context;
-        _repuestos = _context.Set<Repuesto>();
+        _repuestoRepository = repuestoRepository;
     }
+    
 
     public async Task<Repuesto> CreateAsync(Repuesto entity)
     {
-        entity.CreatedAt = DateTime.UtcNow;
-        await _context.AddAsync(entity);
-        await _context.SaveChangesAsync();
+        var exists = await _repuestoRepository.ExistsAsync(r => r.Name == entity.Name);
+        if (exists)
+        {
+            throw new InvalidOperationException(Messages.Repuesto.AlreadyExists);
+        }
+
+        await _repuestoRepository.CreateAsync(entity);
         return entity;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var repuesto = await _repuestos.FindAsync(id);
+        var repuesto = await _repuestoRepository.GetByIdAsync(id);
         if (repuesto == null)
             return false;
-        _context.Repuestos.Remove(repuesto);
-        await _context.SaveChangesAsync();
+        await _repuestoRepository.DeleteAsync(id);
         return true;
     }
 
 
     public async Task<List<Repuesto>> GetAllAsync()
     {
-        return await _repuestos.ToListAsync();
+        return await _repuestoRepository.GetAllAsync();
     }
 
     public async Task<Repuesto?> GetByIdAsync(int id)
     {
 
-        return await _repuestos.FindAsync(id);
+        return await _repuestoRepository.GetByIdAsync(id);
     }
 
     public async Task<Repuesto?> UpdateAsync(int id, Repuesto entity)
     {
-        var repuesto = await _repuestos.FindAsync(id);
+        var repuesto = await _repuestoRepository.GetByIdAsync(id);
         if (repuesto != null)
         {
-            _context.Repuestos.Update(entity);
-            await _context.SaveChangesAsync();
-            return await _repuestos.FindAsync(id);
+            return await _repuestoRepository.UpdateAsync(id, entity);
         }
         return repuesto;
     }
-    /*
-    public ActionResult? RepuestoExists(int repuestoId, out Repuesto? repuesto)
-    {
-        return EntityExists(_repuestos, repuestoId, out repuesto, Messages.Repuesto.NotFound);
-    }
-    */
 }

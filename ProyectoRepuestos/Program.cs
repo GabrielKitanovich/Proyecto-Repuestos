@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using ProyectoRepuestos.Repositories;
+using ProyectoRepuestos.Repositories.Interfaces;
 using ProyectoRepuestos.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddScoped<IRepuestoRepository, RepuestoRepository>();
 builder.Services.AddScoped<IRepuestoService, RepuestoService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
