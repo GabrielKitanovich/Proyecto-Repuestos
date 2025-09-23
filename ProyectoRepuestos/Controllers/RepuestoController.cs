@@ -42,8 +42,15 @@ public class RepuestoController : ControllerBase
             Price = newRepuesto.Price,
             StockQuantity = newRepuesto.StockQuantity
         };
-        var createdRepuesto = await _repuestoService.CreateAsync(repuesto);
-        return CreatedAtAction(nameof(GetById), new { id = createdRepuesto.Id }, createdRepuesto);
+        try
+        {
+            var createdRepuesto = await _repuestoService.CreateAsync(repuesto);
+            return CreatedAtAction(nameof(GetById), new { id = createdRepuesto.Id }, createdRepuesto);
+        }
+        catch (InvalidOperationException ex) when (ex.Message == Messages.Repuesto.AlreadyExists)
+        {
+            return Conflict(Messages.Repuesto.AlreadyExists);
+        }
     }
 
     [HttpPut("{id}")]
