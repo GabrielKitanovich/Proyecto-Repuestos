@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProyectoRepuestos.Bases;
 
-public class BaseModel
+public abstract class BaseModel
 {
 
     public int Id { get; set; }
@@ -13,4 +13,7 @@ public class BaseModel
 
     [DataType(DataType.DateTime)]
     public DateTime? UpdatedAt { get; set; }
+
+    [DataType(DataType.DateTime)]
+    public DateTime? DeletedAt { get; set; }
 }

@@ -50,9 +50,22 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         }
         return false;
     }
-    
+
     public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
     {
         return await _dbSet.AnyAsync(predicate);
+    }
+
+    public async Task<T?> RestoreAsync(int id)
+    {
+        var entity = await _dbSet.FindAsync(id);
+        if (entity != null && entity is BaseModel baseEntity)
+        {
+            baseEntity.IsActive = true;
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+        return null;
     }
 }

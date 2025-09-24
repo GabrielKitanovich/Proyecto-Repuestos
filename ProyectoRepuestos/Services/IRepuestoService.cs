@@ -7,12 +7,8 @@ using ProyectoRepuestos.Models;
 
 namespace ProyectoRepuestos.Services
 {
-    public interface IRepuestoService : IBaseService
+    public interface IRepuestoService : IBaseService<Repuesto>
     {
-    Task<List<Repuesto>> GetAllAsync();
-    Task<Repuesto?> GetByIdAsync(int id);
-    Task<Repuesto> CreateAsync(Repuesto entity);
-    Task<Repuesto?> UpdateAsync(int id, Repuesto entity);
-    Task<bool> DeleteAsync(int id);
+        
     }
 }

@@ -1,31 +1,53 @@
+using ProyectoRepuestos.Helpers;
+
 namespace ProyectoRepuestos.Bases;
 
-public class BaseService : IBaseService
+public class BaseService<T> : IBaseService<T> where T : BaseModel
 {
-    public Task<T> CreateAsync<T>(T entity) where T : BaseModel
+    protected readonly IBaseRepository<T> _repository;
+    public BaseService(IBaseRepository<T> repository)
     {
-        throw new NotImplementedException();
+        _repository = repository;
+    }
+    public async Task<T> CreateAsync(T entity)
+    {
+        await _repository.CreateAsync(entity);
+        return entity;
     }
 
-    public Task<bool> DeleteAsync<T>(int id) where T : BaseModel
+    public async Task<bool> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var entity = await _repository.GetByIdAsync(id);
+        if (entity == null)
+            return false;
+        await _repository.DeleteAsync(id);
+        return true;
     }
 
 
-    public Task<List<T>> GetAllAsync<T>() where T : BaseModel
+    public async Task<List<T>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _repository.GetAllAsync();
     }
 
-    public Task<T?> GetByIdAsync<T>(int id) where T : BaseModel
+    public async Task<T?> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+
+        return await _repository.GetByIdAsync(id);
     }
 
-    public Task<T?> UpdateAsync<T>(int id, T entity) where T : BaseModel
+    public async Task<T?> RestoreAsync(int id)
     {
-        throw new NotImplementedException();
+        return await _repository.RestoreAsync(id);
     }
 
+    public async Task<T?> UpdateAsync(int id, T entity)
+    {
+        var existingEntity = await _repository.GetByIdAsync(id);
+        if (existingEntity != null)
+        {
+            return await _repository.UpdateAsync(id, entity);
+        }
+        return existingEntity;
+    }
 }
