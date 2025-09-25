@@ -9,13 +9,13 @@ public class BaseService<T> : IBaseService<T> where T : BaseModel
     {
         _repository = repository;
     }
-    public async Task<T> CreateAsync(T entity)
+    public virtual async Task<T> CreateAsync(T entity)
     {
         await _repository.CreateAsync(entity);
         return entity;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public virtual async Task<bool> DeleteAsync(int id)
     {
         var entity = await _repository.GetByIdAsync(id);
         if (entity == null)
@@ -25,23 +25,23 @@ public class BaseService<T> : IBaseService<T> where T : BaseModel
     }
 
 
-    public async Task<List<T>> GetAllAsync()
+    public virtual async Task<List<T>> GetAllAsync()
     {
         return await _repository.GetAllAsync();
     }
 
-    public async Task<T?> GetByIdAsync(int id)
+    public virtual async Task<T?> GetByIdAsync(int id)
     {
 
         return await _repository.GetByIdAsync(id);
     }
 
-    public async Task<T?> RestoreAsync(int id)
+    public virtual async Task<T?> RestoreAsync(int id)
     {
         return await _repository.RestoreAsync(id);
     }
 
-    public async Task<T?> UpdateAsync(int id, T entity)
+    public virtual async Task<T?> UpdateAsync(int id, T entity)
     {
         var existingEntity = await _repository.GetByIdAsync(id);
         if (existingEntity != null)

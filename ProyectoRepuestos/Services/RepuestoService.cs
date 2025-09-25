@@ -9,7 +9,7 @@ public class RepuestoService : BaseService<Repuesto>, IRepuestoService
     public RepuestoService(IBaseRepository<Repuesto> repuestoRepository) : base(repuestoRepository)
     {
     }
-    new public async Task<Repuesto> CreateAsync(Repuesto entity)
+    public override async Task<Repuesto> CreateAsync(Repuesto entity)
     {
         var exists = await _repository.ExistsAsync(r => r.Name == entity.Name);
         if (exists)
@@ -21,14 +21,12 @@ public class RepuestoService : BaseService<Repuesto>, IRepuestoService
         return entity;
     }
 
-    new public async Task<Repuesto?> UpdateAsync(int id, Repuesto entity)
+    public override async Task<Repuesto?> UpdateAsync(int id, Repuesto entity)
     {
-        var exists = await _repository.ExistsAsync(r => r.Name == entity.Name);
-        var repuesto = await _repository.GetByIdAsync(id);
-        if (repuesto != null && !exists)
-        {
-            return await _repository.UpdateAsync(id, entity);
-        }
-        return repuesto;
+        var exists = await _repository.ExistsAsync(r => r.Name == entity.Name && r.Id != id);
+        if (exists)
+            throw new InvalidOperationException(Messages.Repuesto.AlreadyExists);
+
+        return await _repository.UpdateAsync(id, entity);
     }
 }

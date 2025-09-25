@@ -49,7 +49,7 @@ public class RepuestoController : ControllerBase
         }
         catch (InvalidOperationException ex) when (ex.Message == Messages.Repuesto.AlreadyExists)
         {
-            return Conflict(Messages.Repuesto.AlreadyExists);
+            return Conflict(ex.Message);
         }
     }
 
@@ -59,17 +59,21 @@ public class RepuestoController : ControllerBase
         var existingRepuesto = await _repuestoService.GetByIdAsync(id);
         if (existingRepuesto == null)
             return NotFound(Messages.Repuesto.NotFound);
-
-        existingRepuesto.Name = updatedRepuesto.Name;
-        existingRepuesto.Description = updatedRepuesto.Description;
-        existingRepuesto.Price = updatedRepuesto.Price;
-        existingRepuesto.StockQuantity = updatedRepuesto.StockQuantity;
-
-        var result = await _repuestoService.UpdateAsync(id, existingRepuesto);
-        if (result == null)
-            return NotFound(Messages.Repuesto.NotFound);
-
-        return Ok(result);
+            
+        try
+        {
+            existingRepuesto.Name = updatedRepuesto.Name;
+            existingRepuesto.Description = updatedRepuesto.Description;
+            existingRepuesto.Price = updatedRepuesto.Price;
+            existingRepuesto.StockQuantity = updatedRepuesto.StockQuantity;
+            var result = await _repuestoService.UpdateAsync(id, existingRepuesto);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex) when (ex.Message == Messages.Repuesto.AlreadyExists)
+        {
+            return Conflict(Messages.Repuesto.AlreadyExists);
+        }
+        
     }
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)

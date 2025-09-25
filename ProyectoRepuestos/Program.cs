@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ProyectoRepuestos.Bases;
 using ProyectoRepuestos.Repositories;
 using ProyectoRepuestos.Repositories.Interfaces;
 using ProyectoRepuestos.Services;
@@ -13,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IRepuestoRepository, RepuestoRepository>();
 builder.Services.AddScoped<IRepuestoService, RepuestoService>();
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
