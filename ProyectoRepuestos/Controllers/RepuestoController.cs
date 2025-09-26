@@ -3,6 +3,7 @@ using ProyectoRepuestos.Helpers;
 using ProyectoRepuestos.Models;
 using ProyectoRepuestos.Models.Dtos;
 using ProyectoRepuestos.Services;
+using AutoMapper;
 
 namespace ProyectoRepuestos.Controllers;
 
@@ -11,10 +12,12 @@ namespace ProyectoRepuestos.Controllers;
 public class RepuestoController : ControllerBase
 {
     private readonly IRepuestoService _repuestoService;
+    private readonly IMapper _mapper;
 
-    public RepuestoController(IRepuestoService repuestoService)
+    public RepuestoController(IRepuestoService repuestoService, IMapper mapper)
     {
         _repuestoService = repuestoService;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -35,13 +38,7 @@ public class RepuestoController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Repuesto>> Create(RepuestoDto newRepuesto)
     {
-        var repuesto = new Repuesto
-        {
-            Name = newRepuesto.Name,
-            Description = newRepuesto.Description,
-            Price = newRepuesto.Price,
-            StockQuantity = newRepuesto.StockQuantity
-        };
+        var repuesto = _mapper.Map<Repuesto>(newRepuesto);
         try
         {
             var createdRepuesto = await _repuestoService.CreateAsync(repuesto);
@@ -62,10 +59,7 @@ public class RepuestoController : ControllerBase
 
         try
         {
-            existingRepuesto.Name = updatedRepuesto.Name;
-            existingRepuesto.Description = updatedRepuesto.Description;
-            existingRepuesto.Price = updatedRepuesto.Price;
-            existingRepuesto.StockQuantity = updatedRepuesto.StockQuantity;
+            existingRepuesto = _mapper.Map(updatedRepuesto, existingRepuesto);
             var result = await _repuestoService.UpdateAsync(id, existingRepuesto);
             return Ok(result);
         }

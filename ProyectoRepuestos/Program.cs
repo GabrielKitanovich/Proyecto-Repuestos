@@ -12,6 +12,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IRepuestoRepository, RepuestoRepository>();
 builder.Services.AddScoped<IRepuestoService, RepuestoService>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
