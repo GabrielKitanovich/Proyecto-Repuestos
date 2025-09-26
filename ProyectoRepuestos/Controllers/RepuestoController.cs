@@ -59,7 +59,7 @@ public class RepuestoController : ControllerBase
         var existingRepuesto = await _repuestoService.GetByIdAsync(id);
         if (existingRepuesto == null)
             return NotFound(Messages.Repuesto.NotFound);
-            
+
         try
         {
             existingRepuesto.Name = updatedRepuesto.Name;
@@ -73,7 +73,7 @@ public class RepuestoController : ControllerBase
         {
             return Conflict(Messages.Repuesto.AlreadyExists);
         }
-        
+
     }
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
@@ -82,5 +82,22 @@ public class RepuestoController : ControllerBase
         if (!success)
             return NotFound(Messages.Repuesto.NotFound);
         return NoContent();
+    }
+
+    [HttpGet("{id}/restore")]
+    public async Task<IActionResult> Restore(int id)
+    {
+        try
+        {
+            var entity = await _repuestoService.RestoreAsync(id);
+            if (entity == null)
+                return NotFound(Messages.Repuesto.NotFound);
+    
+            return Ok(entity);
+        }
+        catch (InvalidOperationException ex) when (ex.Message == Messages.Repuesto.AlreadyExists)
+        {
+            return Conflict(ex.Message);
+        }
     }
 }

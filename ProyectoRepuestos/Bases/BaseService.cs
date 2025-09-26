@@ -38,6 +38,12 @@ public class BaseService<T> : IBaseService<T> where T : BaseModel
 
     public virtual async Task<T?> RestoreAsync(int id)
     {
+        var existingEntity = await _repository.GetByIdAsync(id);
+        if (existingEntity != null && existingEntity.IsActive)
+        {
+            throw new InvalidOperationException(Messages.Repuesto.AlreadyExists);
+        }
+
         return await _repository.RestoreAsync(id);
     }
 

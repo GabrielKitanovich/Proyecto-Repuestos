@@ -42,9 +42,11 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
     public async Task<bool> DeleteAsync(int id)
     {
         var entity = await _dbSet.FindAsync(id);
-        if (entity != null)
+        if (entity != null && entity is BaseModel baseEntity)
         {
-            _dbSet.Remove(entity);
+            baseEntity.IsActive = false;
+            baseEntity.DeletedAt = DateTime.UtcNow;
+            _dbSet.Update(entity);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -58,7 +60,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 
     public async Task<T?> RestoreAsync(int id)
     {
-        var entity = await _dbSet.FindAsync(id);
+        var entity = await _dbSet.IgnoreQueryFilters().FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         if (entity != null && entity is BaseModel baseEntity)
         {
             baseEntity.IsActive = true;

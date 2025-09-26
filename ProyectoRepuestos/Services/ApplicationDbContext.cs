@@ -46,6 +46,19 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (typeof(BaseModel).IsAssignableFrom(entityType.ClrType))
+            {
+                var method = typeof(ApplicationDbContext)
+                    .GetMethod(nameof(ApplyQueryFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+                    ?.MakeGenericMethod(entityType.ClrType);
+
+                method?.Invoke(null, new object[] { modelBuilder });
+            }
+        }
+
+
         modelBuilder.Entity<Repuesto>().HasData(
             new Repuesto
             {
@@ -78,5 +91,9 @@ public class ApplicationDbContext : DbContext
                 CreatedAt = new DateTime(2024, 9, 20, 0, 0, 0, DateTimeKind.Utc) // Valor estático
             }
         );
+    }
+    private static void ApplyQueryFilter<T>(ModelBuilder modelBuilder) where T : BaseModel
+    {
+        modelBuilder.Entity<T>().HasQueryFilter(e => e.IsActive);
     }
 }
