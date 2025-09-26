@@ -95,7 +95,7 @@ public class RepuestoController : ControllerBase
     
             return Ok(entity);
         }
-        catch (InvalidOperationException ex) when (ex.Message == Messages.Repuesto.AlreadyExists)
+        catch (InvalidOperationException ex) when (ex.Message == Messages.General.AlreadyExists)
         {
             return Conflict(ex.Message);
         }

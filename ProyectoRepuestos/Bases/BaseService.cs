@@ -41,7 +41,7 @@ public class BaseService<T> : IBaseService<T> where T : BaseModel
         var existingEntity = await _repository.GetByIdAsync(id);
         if (existingEntity != null && existingEntity.IsActive)
         {
-            throw new InvalidOperationException(Messages.Repuesto.AlreadyExists);
+            throw new InvalidOperationException(Messages.General.AlreadyExists);
         }
 
         return await _repository.RestoreAsync(id);
