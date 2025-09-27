@@ -56,7 +56,6 @@ public class RepuestoController : ControllerBase
         var existingRepuesto = await _repuestoService.GetByIdAsync(id);
         if (existingRepuesto == null)
             return NotFound(Messages.Repuesto.NotFound);
-
         try
         {
             existingRepuesto = _mapper.Map(updatedRepuesto, existingRepuesto);
@@ -75,7 +74,7 @@ public class RepuestoController : ControllerBase
         var success = await _repuestoService.DeleteAsync(id);
         if (!success)
             return NotFound(Messages.Repuesto.NotFound);
-        return NoContent();
+        return Ok(Messages.Repuesto.Deleted + ", Id: " + id);
     }
 
     [HttpGet("{id}/restore")]
