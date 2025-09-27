@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using ProyectoRepuestos.Bases;
 using ProyectoRepuestos.Models;
 using ProyectoRepuestos.Repositories.Interfaces;
