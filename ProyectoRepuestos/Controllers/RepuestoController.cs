@@ -4,35 +4,17 @@ using ProyectoRepuestos.Models;
 using ProyectoRepuestos.Models.Dtos;
 using ProyectoRepuestos.Services;
 using AutoMapper;
+using ProyectoRepuestos.Bases;
 
 namespace ProyectoRepuestos.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RepuestoController : ControllerBase
+public class RepuestoController : BaseController<Repuesto>
 {
-    private readonly IRepuestoService _repuestoService;
-    private readonly IMapper _mapper;
-
-    public RepuestoController(IRepuestoService repuestoService, IMapper mapper)
+        public RepuestoController(IRepuestoService repuestoService, IMapper mapper)
+        : base(repuestoService, mapper)
     {
-        _repuestoService = repuestoService;
-        _mapper = mapper;
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Repuesto>>> GetAll()
-    {
-        return Ok(await _repuestoService.GetAllAsync());
-    }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Repuesto>> GetById(int id)
-    {
-        var result = await _repuestoService.GetByIdAsync(id);
-        if (result == null)
-            return NotFound(Messages.Repuesto.NotFound);
-        return Ok(result);
     }
 
     [HttpPost]
@@ -41,7 +23,7 @@ public class RepuestoController : ControllerBase
         var repuesto = _mapper.Map<Repuesto>(newRepuesto);
         try
         {
-            var createdRepuesto = await _repuestoService.CreateAsync(repuesto);
+            var createdRepuesto = await _service.CreateAsync(repuesto);
             return CreatedAtAction(nameof(GetById), new { id = createdRepuesto.Id }, createdRepuesto);
         }
         catch (InvalidOperationException ex) when (ex.Message == Messages.Repuesto.AlreadyExists)
@@ -53,13 +35,13 @@ public class RepuestoController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<Repuesto>> Update(int id, RepuestoDto updatedRepuesto)
     {
-        var existingRepuesto = await _repuestoService.GetByIdAsync(id);
+        var existingRepuesto = await _service.GetByIdAsync(id);
         if (existingRepuesto == null)
             return NotFound(Messages.Repuesto.NotFound);
         try
         {
             existingRepuesto = _mapper.Map(updatedRepuesto, existingRepuesto);
-            var result = await _repuestoService.UpdateAsync(id, existingRepuesto);
+            var result = await _service.UpdateAsync(id, existingRepuesto);
             return Ok(result);
         }
         catch (InvalidOperationException ex) when (ex.Message == Messages.Repuesto.AlreadyExists)
@@ -67,30 +49,5 @@ public class RepuestoController : ControllerBase
             return Conflict(Messages.Repuesto.AlreadyExists);
         }
 
-    }
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var success = await _repuestoService.DeleteAsync(id);
-        if (!success)
-            return NotFound(Messages.Repuesto.NotFound);
-        return Ok(Messages.Repuesto.Deleted + ", Id: " + id);
-    }
-
-    [HttpGet("{id}/restore")]
-    public async Task<IActionResult> Restore(int id)
-    {
-        try
-        {
-            var entity = await _repuestoService.RestoreAsync(id);
-            if (entity == null)
-                return NotFound(Messages.Repuesto.NotFound);
-    
-            return Ok(entity);
-        }
-        catch (InvalidOperationException ex) when (ex.Message == Messages.General.AlreadyExists)
-        {
-            return Conflict(ex.Message);
-        }
     }
 }

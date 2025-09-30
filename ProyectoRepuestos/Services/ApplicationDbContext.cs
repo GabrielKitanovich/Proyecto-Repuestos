@@ -54,7 +54,7 @@ public class ApplicationDbContext : DbContext
                     .GetMethod(nameof(ApplyQueryFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
                     ?.MakeGenericMethod(entityType.ClrType);
 
-                method?.Invoke(null, new object[] { modelBuilder });
+                method?.Invoke(null, [modelBuilder]);
             }
         }
 
