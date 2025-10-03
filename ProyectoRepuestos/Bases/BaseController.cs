@@ -8,6 +8,8 @@ public class BaseController<T, TDto> : ControllerBase where T : BaseModel
     protected readonly IBaseService<T> _service;
     protected readonly IMapper _mapper;
     
+    protected virtual string NotFoundMessage => Messages.General.NotFound;
+    protected virtual string DeletedMessage => Messages.General.Deleted;
 
 
     public BaseController(IBaseService<T> service, IMapper mapper)
@@ -27,7 +29,7 @@ public class BaseController<T, TDto> : ControllerBase where T : BaseModel
     {
         var entity = await _service.GetByIdAsync(id);
         if (entity == null)
-            return NotFound(Messages.General.NotFound);
+            return NotFound(NotFoundMessage);
         return Ok(entity);
     }
 
@@ -51,7 +53,7 @@ public class BaseController<T, TDto> : ControllerBase where T : BaseModel
     {
         var existingEntity = await _service.GetByIdAsync(id);
         if (existingEntity == null)
-            return NotFound(Messages.General.NotFound);
+            return NotFound(NotFoundMessage);
 
         try
         {
@@ -70,8 +72,8 @@ public class BaseController<T, TDto> : ControllerBase where T : BaseModel
     {
         var success = await _service.DeleteAsync(id);
         if (!success)
-            return NotFound(Messages.General.NotFound);
-        return Ok(Messages.General.Deleted);
+            return NotFound(NotFoundMessage);
+        return Ok(DeletedMessage);
     }
 
     [HttpGet("{id}/restore")]
@@ -81,7 +83,7 @@ public class BaseController<T, TDto> : ControllerBase where T : BaseModel
         {
             var entity = await _service.RestoreAsync(id);
             if (entity == null)
-                return NotFound(Messages.General.NotFound);
+                return NotFound(NotFoundMessage);
             return Ok(entity);
         }
         catch (InvalidOperationException ex)

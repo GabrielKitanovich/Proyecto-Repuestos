@@ -16,9 +16,7 @@ public static class Messages
         public const string NotFound = "Elemento no encontrado.";
         public const string AlreadyExists = "El elemento ya existe.";
         public const string InvalidData = "Datos inválidos.";
-
         public const string InternalError = "Error interno del servidor.";
-
         public const string Deleted = "Elemento eliminado exitosamente.";
     }
 }
