@@ -64,6 +64,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         if (entity != null && entity is BaseModel baseEntity)
         {
             baseEntity.IsActive = true;
+            baseEntity.DeletedAt = null;
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
             return entity;
