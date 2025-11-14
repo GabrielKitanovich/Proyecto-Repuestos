@@ -12,8 +12,8 @@ namespace ProyectoRepuestos.Controllers;
 [Route("api/[controller]")]
 public class RepuestoController : BaseController<Repuesto, RepuestoDto>
 {
-    public RepuestoController(IRepuestoService repuestoService, IMapper mapper)
-    : base(repuestoService, mapper)
+    public RepuestoController(IRepuestoService repuestoService, IMapper mapper, ILogger<Repuesto> logger)
+    : base(repuestoService, mapper, logger)
     {
     }
 
