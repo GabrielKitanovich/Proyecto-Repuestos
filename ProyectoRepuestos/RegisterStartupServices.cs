@@ -47,6 +47,13 @@ public static class RegisterStartupServices
         {
             // Configuración de contraseñas (opcional)
             options.Password.RequiredLength = 6;
+            options.Password.RequireDigit = false; // No requiere números
+            options.Password.RequireNonAlphanumeric = false; // No requiere caracteres especiales
+            options.Password.RequireUppercase = false; // No requiere mayúsculas
+            options.Password.RequireLowercase = false; // No requiere minúsculas
+            
+            // Opcional: configuración de usuario
+            options.User.RequireUniqueEmail = true;
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();

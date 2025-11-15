@@ -14,5 +14,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.DeletedAt, opt => opt.Ignore());
+        CreateMap<ApplicationUser, ApplicationUserDTO>();
+        CreateMap<ApplicationUserDTO, ApplicationUser>();
     }
 }
