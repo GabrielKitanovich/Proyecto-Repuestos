@@ -13,6 +13,10 @@ public static class RegisterStartupMiddlewares
 
         app.UseHttpsRedirection();
 
+        // Agregar middleware de autenticación y autorización
+        app.UseAuthentication();
+        app.UseAuthorization();
+
         app.MapControllers();
 
         return app;
