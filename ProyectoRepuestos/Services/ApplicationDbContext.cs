@@ -8,7 +8,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Repuesto> Repuestos { get; set; }
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
