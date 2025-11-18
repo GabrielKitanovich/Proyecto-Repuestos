@@ -33,6 +33,11 @@ namespace ProyectoRepuestos.Controllers
         [HttpPost("register-user")]
         public async Task<IActionResult> Register(ApplicationUserDTO payload)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid registration data.");
+            }
+
             var userExists = await _userManager.FindByEmailAsync(payload.Email);
             if (userExists != null)
             {
@@ -46,6 +51,23 @@ namespace ProyectoRepuestos.Controllers
                 return BadRequest($"User creation failed: {errors}");
             }
             return Created(nameof(Register), $"User {payload.Email} created successfully!");
+        }
+
+        [HttpPost("login-user")]
+        public async Task<IActionResult> Login(LoginDto payload)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid login data.");
+            }
+
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+            if (user != null || await _userManager.CheckPasswordAsync(user!, payload.PasswordHash))
+            {
+                var token = await GenerateJwtToken(user!);
+                return Ok(token);
+            }
+            return Unauthorized("Invalid email or password.");
         }
 
         private async Task<AuthResultDto> GenerateJwtToken(ApplicationUser user)

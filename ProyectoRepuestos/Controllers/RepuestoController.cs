@@ -5,11 +5,13 @@ using ProyectoRepuestos.Services;
 using AutoMapper;
 using ProyectoRepuestos.Bases;
 using ProyectoRepuestos.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProyectoRepuestos.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class RepuestoController : BaseController<Repuesto, RepuestoDto>
 {
     public RepuestoController(IRepuestoService repuestoService, IMapper mapper, ILogger<Repuesto> logger)
