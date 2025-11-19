@@ -42,6 +42,23 @@ public static class RegisterStartupServices
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+        //Token validation parameters
+        var jwtSecret = builder.Configuration.GetValue<string>("JWT:Secret") 
+            ?? throw new InvalidOperationException("JWT:Secret configuration is missing");
+        var tokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecret)),
+                    ValidateIssuer = true,
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+        builder.Services.AddSingleton(tokenValidationParameters);
+
+
         // Agregar Identity
         builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
@@ -68,18 +85,10 @@ public static class RegisterStartupServices
          {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
-                var jwtSecret = builder.Configuration.GetValue<string>("JWT:Secret") 
-                    ?? throw new InvalidOperationException("JWT:Secret configuration is missing");
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSecret)),
-                    ValidateIssuer = true,
-                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-                    ValidateAudience = true,
-                    ValidAudience = builder.Configuration["JWT:ValidAudience"]
-                };
+                options.TokenValidationParameters = tokenValidationParameters;
          });
+
+        
         return builder;
     }
 }

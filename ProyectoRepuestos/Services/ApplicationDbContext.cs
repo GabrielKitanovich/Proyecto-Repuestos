@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ProyectoRepuestos.Bases;
@@ -93,6 +94,22 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             }
         );
     }
+
+    public static async Task SeedRoles(IApplicationBuilder applicationBuilder)
+    {
+        using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+        {
+            var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            if (!await roleManager.RoleExistsAsync(Enums.UserRoles.Admin.ToString()))
+                    await roleManager.CreateAsync(new IdentityRole(Enums.UserRoles.Admin.ToString()));
+            if (!await roleManager.RoleExistsAsync(Enums.UserRoles.User.ToString()))
+                    await roleManager.CreateAsync(new IdentityRole(Enums.UserRoles.User.ToString()));
+            if (!await roleManager.RoleExistsAsync(Enums.UserRoles.SignedOff.ToString()))
+                    await roleManager.CreateAsync(new IdentityRole(Enums.UserRoles.SignedOff.ToString()));
+        }
+    }
+
     private static void ApplyQueryFilter<T>(ModelBuilder modelBuilder) where T : BaseModel
     {
         modelBuilder.Entity<T>().HasQueryFilter(e => e.IsActive);

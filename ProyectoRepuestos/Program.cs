@@ -1,3 +1,8 @@
 using ProyectoRepuestos;
+using ProyectoRepuestos.Services;
 
-WebApplication.CreateBuilder(args).RegisterServices().Build().SetupMiddleware().Run();
+var builder = WebApplication.CreateBuilder(args);
+builder.RegisterServices();
+var app = builder.Build();
+await ApplicationDbContext.SeedRoles(app);
+app.SetupMiddleware().Run();

@@ -1,9 +1,13 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoRepuestos.Helpers;
 using ProyectoRepuestos.Logs;
 
+
+
 namespace ProyectoRepuestos.Bases;
+[Authorize]
 public class BaseController<T, TDto> : ControllerBase where T : BaseModel
 {
     private readonly ILogger<T> _logger;
@@ -38,6 +42,7 @@ public class BaseController<T, TDto> : ControllerBase where T : BaseModel
         return Ok(entity);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public virtual async Task<ActionResult<T>> Create(TDto dto)
     {
@@ -55,6 +60,7 @@ public class BaseController<T, TDto> : ControllerBase where T : BaseModel
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public virtual async Task<ActionResult<T>> Update(int id, TDto dto)
     {
@@ -69,7 +75,7 @@ public class BaseController<T, TDto> : ControllerBase where T : BaseModel
         {
             _mapper.Map(dto, existingEntity);
             var updatedEntity = await _service.UpdateAsync(id, existingEntity);
-            if (_logger != null) _logger.UpdatedEntity(typeof(T).Name, updatedEntity.Id, DateTime.Now);
+            if (_logger != null) _logger.UpdatedEntity(typeof(T).Name, updatedEntity!.Id, DateTime.Now);
             return Ok(updatedEntity);
         }
         catch (InvalidOperationException ex)
@@ -79,6 +85,8 @@ public class BaseController<T, TDto> : ControllerBase where T : BaseModel
         }
     }
 
+
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public virtual async Task<IActionResult> Delete(int id)
     {
@@ -91,6 +99,8 @@ public class BaseController<T, TDto> : ControllerBase where T : BaseModel
         return Ok(DeletedMessage);
     }
 
+
+    [Authorize(Roles = "Admin")]
     [HttpGet("{id}/restore")]
     public virtual async Task<ActionResult<T?>> Restore(int id)
     {
